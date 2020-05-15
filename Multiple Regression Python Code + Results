@@ -1,0 +1,54 @@
+import pandas as pd
+from sklearn import linear_model
+import statsmodels.api as sm
+df = pd.read_csv(r'C:\Users\Isaiah Lee\Desktop\covid19-in-usa\us_covid19_dailya.csv')
+X = df[['Week','death']]
+Y = df['Approval']
+# with sklearn
+regr = linear_model.LinearRegression()
+regr.fit(X, Y)
+LinearRegression(copy_X=True, fit_intercept=True, n_jobs=None, normalize=False)
+print('Intercept: \n', regr.intercept_)
+Intercept:
+45.18728627249923
+print('Coefficients: \n', regr.coef_)
+# prediction with sklearn
+New_Week = 9
+New_Death = 90000
+print('Predicted Approval Rating: \n', regr.predict([[New_Week, New_Death]]))
+#with statsmodels
+X = sm.add_constant(X)
+model = sm.OLS(Y, X).fit()
+predictions = model.predict(X)
+print_model = model.summary()
+print(print_model)
+
+//results
+  OLS Regression Results
+  
+  //Coefficients:
+// [-1.75624063e+00  9.96593971e-05]
+  //Predicted Approval Rating:
+// [38.35046633]
+==============================================================================
+Dep. Variable:               Approval   R-squared:                       0.089
+Model:                            OLS   Adj. R-squared:                  0.053
+Method:                 Least Squares   F-statistic:                     2.449
+Date:                Thu, 14 May 2020   Prob (F-statistic):             0.0966
+Time:                        21:51:29   Log-Likelihood:                -155.71
+No. Observations:                  53   AIC:                             317.4
+Df Residuals:                      50   BIC:                             323.3
+Df Model:                           2
+Covariance Type:            nonrobust
+==============================================================================
+                 coef    std err          t      P>|t|      [0.025      0.975]
+------------------------------------------------------------------------------
+const         45.1873      2.763     16.352      0.000      39.637      50.738
+Week          -1.7562      1.661     -1.058      0.295      -5.092       1.579
+death       9.966e-05      0.000      0.696      0.490      -0.000       0.000
+==============================================================================
+Omnibus:                        1.703   Durbin-Watson:                   1.917
+Prob(Omnibus):                  0.427   Jarque-Bera (JB):                1.285
+Skew:                          -0.381   Prob(JB):                        0.526
+Kurtosis:                       3.017   Cond. No.                     2.03e+05
+==============================================================================
